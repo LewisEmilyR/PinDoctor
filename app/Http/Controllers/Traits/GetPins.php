@@ -31,8 +31,6 @@ trait GetPins
             throw new Exception("You don't seem to have any pins!");
         }
 
-        $pins = $pins->slice(0, 2);
-
         $newCollection = $pins->map(function($pin) use ($linkChecker) {
             $pin->valid = $pin->checkLink($linkChecker);
             $pin->debug = $pin->debugLink($linkChecker);
