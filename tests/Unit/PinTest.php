@@ -35,18 +35,27 @@ class PinTest extends TestCase
         $this->assertFalse($pin->checkLink($tester));
     }
 
-    public function testDebugLink()
+    public function testRatio()
     {
-        $pin = new Pin(['link' => 'https://a.link.that.exists/']);
+        $img = json_decode('{"264x": {
+            "height": 1000,
+            "width": 100
+        }}');
+        $pin = new Pin(['images' => $img]);
+        $this->assertEquals(10, $pin->ratio);
+    }
 
-        $mockStatus = json_decode('{"status": 200}');
-        $tester = $this->createMock(PinLinkChecker::class);
-        $tester->method('getLink')->willReturn($mockStatus);
-        $this->assertEquals(200, $pin->debugLink($tester));
-
-        $mockStatus = json_decode('{"status": 404}');
-        $tester = $this->createMock(PinLinkChecker::class);
-        $tester->method('getLink')->willReturn($mockStatus);
-        $this->assertEquals(404, $pin->debugLink($tester));
+    public function testCheckRatio()
+    {
+        $height = 100;
+        $width = 50;
+        $img = json_decode('{"264x": {
+            "height": '.$height.',
+            "width": '.$width.'
+        }}');
+        $pin = new Pin(['images' => $img]);
+        $this->assertEquals(2, $pin->ratio);
+        $this->assertFalse($pin->checkRatio(1.2));
+        $this->assertTrue($pin->checkRatio(3));
     }
 }

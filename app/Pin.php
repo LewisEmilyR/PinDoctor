@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pin extends Model
 {
-    protected $fillable = ['url', 'note', 'link', 'id'];
+    protected $fillable = ['url', 'note', 'link', 'id', 'images'];
     public $valid;
-    public $debug;
+    public $status;
+    protected $ratio;
+    protected $validRatio;
 
     /**
      * Does the pin have a link, and is that link valid?
@@ -20,6 +22,7 @@ class Pin extends Model
             return false;
         }
         $linkResponse = $pinLinkChecker->getLink($this->link);
+        $this->status = $linkResponse->status;
         if (($linkResponse->status > 199) && ($linkResponse->status < 300)) {
             return true;
         }
@@ -27,14 +30,14 @@ class Pin extends Model
         return false;
     }
 
-    /**
-     * Output link status.
-     * @return int 
-     */
-    public function debugLink($pinLinkChecker)
+    public function getRatioAttribute()
     {
-        $linkResponse = $pinLinkChecker->getLink($this->link);
-        return $linkResponse->status;
-    }
+        if (empty($this->ratio)) {
+            $images = (array)$this->images;
+            $imageDesc = array_shift($images);
+            $this->ratio = round($imageDesc->height/$imageDesc->width, 2);
+        }
 
+        return $this->ratio;
+    }
 }

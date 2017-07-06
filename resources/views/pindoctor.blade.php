@@ -33,8 +33,8 @@
                     <tr>
                         <td>Id</td>
                         <td>Link</td>
-                        <td>Valid</td>
-                        <td>Debug</td>
+                        <td>Status</td>
+                        <td>Ratio</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,15 +48,19 @@
                                 No Link
                             @endif
                         </td>
-                        <td>
-                            @if($pin->valid)
-                                VALID
-                            @else
-                                INVALID
-                            @endif
+                        @if($pin->valid)
+                            <td class='bg-success'>
+                        @else
+                            <td class='bg-danger'>
+                        @endif
+                            {{$pin->status}}
                         </td>
-                        <td>
-                            {{$pin->debug}}
+                        @if($pin->ratio < 1.2)
+                            <td class='bg-danger'>
+                        @else 
+                            <td class='bg-success'>
+                        @endif
+                            {{$pin->ratio}}
                         </td>
                     </tr>
                 @endforeach

@@ -33,7 +33,6 @@ trait GetPins
 
         $newCollection = $pins->map(function($pin) use ($linkChecker) {
             $pin->valid = $pin->checkLink($linkChecker);
-            $pin->debug = $pin->debugLink($linkChecker);
             return $pin;
         });
 
